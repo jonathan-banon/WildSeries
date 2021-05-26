@@ -13,7 +13,7 @@ class DefaultController extends AbstractController
      */
     public function index(): Response
     {
-        $h1 = 'Bienvenu !';
+        $h1 = 'Bienvenue !';
         return $this->render('program/index.html.twig', [
             'h1' => $h1,
         ]);
