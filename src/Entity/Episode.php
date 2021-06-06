@@ -38,7 +38,7 @@ class Episode
     /**
      * @var string
      *
-     * @ORM\Column(name="synopsis", type="text", length=0, nullable=false)
+     * @ORM\Column(name="synopsis", type="text", length=255, nullable=false)
      */
     private $synopsis;
 

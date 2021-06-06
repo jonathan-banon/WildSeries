@@ -12,6 +12,8 @@
                     <li>
                         <a href="{{ path("program_season_show", { program: program.id, season: season.id}) }}">Saison {{ season.id }}</a>
                     </li>
+                {% else %}
+                    <p>aucun saison dispo</p>
                 {% endfor %}
             </ul>
         </div>
