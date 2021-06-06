@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Seasons{% endblock %}
+
+{% block body %}
+{#    {{ dump(program) }}#}
+{#    {{ dump(season) }}#}
+{#    {{ dump(episodes) }}#}
+        <div>
+            <h1>{{ program.title }}</h1>
+            <p>id : {{ season.id }}</p>
+            <p>nombre : {{ season.number }}</p>
+            <p>année : {{ season.year }}</p>
+        </div>
+    <ul>
+        <p>Liste des épisodes :</p>
+        {% for episode in episodes %}
+            <li>
+                <p> ID {{ episode.id }} : {{ episode.title }} : {{ episode.synopsis }}</p>
+            </li>
+
+            {#
+            ERROR getStatutCode with this line
+            <a href="{{ path("program_episode_show", {program: program.id, season: season.id, episode: episode.id}) }}"><h2> Episode : {{ episode.number }} - {{ episode.title }}</h2></a>
+            #}
+
+        {% else %}
+            <p>PAS D EPISODES DISPONIBLES</p>
+        {% endfor %}
+    </ul>
+
+
+    <a href="{{ path('app_index') }}">
+        Retour à l'accueil
+    </a>
+{% endblock %}
