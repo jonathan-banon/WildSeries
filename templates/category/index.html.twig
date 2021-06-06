@@ -4,10 +4,13 @@
 
 {% block body %}
     {% for category in categories %}
-        <p>
-            Id : {{ category.id }} <br>
-            Name : {{ category.name }}
-        </p>
+        <div class="container m-5">
+            <p>
+                Id : {{ category.id }} <br>
+                Name : {{ category.name }}
+            </p>
+            <a href="{{ path('category_show', {categoryName: category.name}) }}">Voir programes</a>
+        </div>
     {% else %}
     {% endfor %}
 {% endblock %}

@@ -4,6 +4,8 @@ namespace App\Controller;
 
 use App\Entity\Category;
 use App\Entity\Program;
+use App\Repository\CategoryRepository;
+use App\Repository\ProgramRepository;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -17,10 +19,9 @@ class CategoryController extends AbstractController
     /**
      * @Route ("/", name="index")
      */
-    public function index(): Response
+    public function index(CategoryRepository $categoryRepository): Response
     {
-        $categories = $this->getDoctrine()
-            ->getRepository(Category::class)
+        $categories = $categoryRepository
             ->findAll();
         return $this->render('category/index.html.twig', [
             'categories' => $categories,
@@ -28,21 +29,19 @@ class CategoryController extends AbstractController
     }
 
     /**
-     * @Route ("/{categoryName}", name="show")
+     * @Route ("/show/{categoryName}", name="show")
      */
-    public function show(string $categoryName): Response
+    public function show(string $categoryName, CategoryRepository $categoryRepository, ProgramRepository $programRepository): Response
     {
         $nbProgramByCategoryMax = 3;
-        $category = $this->getDoctrine()
-            ->getRepository(Category::class)
+        $category = $categoryRepository
             ->findOneBy(['name' => $categoryName]);
         if (!$category) {
             throw $this->createNotFoundException(
                 '404 : Aucune catégorie ne correspond à ' . $categoryName
             );
         } else {
-            $programs = $this->getDoctrine()
-                ->getRepository(Program::class)
+            $programs = $programRepository
                 ->findBy(
                     ['category' => $category],
                     ['id' => 'DESC'],

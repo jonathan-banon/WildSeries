@@ -7,20 +7,14 @@
     {% if programs is empty %}
         <h1>No Program for catégory :{{ category.name }}</h1>
     {% else %}
-        <h1>{{ category.name }} programe(s): </h1>
-        <ul>
+        <h1> Programe(s) dans la category : {{ category.name }}</h1>
             {% for program in programs %}
-                <li>
+                <div  class="container m-5">
                     <p>Id :{{ program.id }} </p>
-                </li>
-                <li>
                     <p>Title : {{ program.title }}</p>
-                </li>
-                <li>
                     <p>Summary : {{ program.summary }}</p>
-                </li>
-                <a href="{{ path('program_show', {id : program.id}) }}">Voir sa fiche</a> <br>
-
+                    <a href="{{ path('program_show', {id : program.id}) }}">Voir sa fiche</a> <br>
+                </div>
             {% endfor %}
         </ul>
     {% endif %}
