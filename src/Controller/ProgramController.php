@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Episode;
 use App\Entity\Program;
 use App\Entity\Season;
+use App\Form\ProgramType;
 use App\Repository\EpisodeRepository;
 use App\Repository\ProgramRepository;
 use App\Repository\SeasonRepository;
@@ -37,6 +38,30 @@ class ProgramController extends AbstractController
             ['programs' => $programs]
         );
 
+    }
+
+    /**
+     *The controller for the category add form
+     *
+     *@Route("/new", name="new")
+     *@return Response
+     */
+    public function new(Request $request):  Response
+    {
+        $program = new Program();
+        // Create associated Form
+        $form = $this->createForm(ProgramType::class, $program);
+        // Create data from HTTP request
+        $form->handleRequest($request);
+        if($form->isSubmitted()) {
+            $entityManager = $this->getDoctrine()->getManager();
+            $entityManager->persist($program);
+            $entityManager->flush();
+            return $this->redirectToRoute('program_index');
+        }
+        return $this->render('program/new.html.twig', [
+            "form" => $form->createView(),
+        ]);
     }
 
     /**
