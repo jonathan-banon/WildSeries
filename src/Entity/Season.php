@@ -38,7 +38,7 @@ class Season
     /**
      * @var string
      *
-     * @ORM\Column(name="description", type="text", length=0, nullable=false)
+     * @ORM\Column(name="description", type="text", length=255, nullable=false)
      */
     private $description;
 
