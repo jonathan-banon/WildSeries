@@ -2,55 +2,53 @@
 
 namespace App\Entity;
 
+use App\Repository\SeasonRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Season
- *
- * @ORM\Table(name="season", indexes={@ORM\Index(name="IDX_F0E45BA93EB8070A", columns={"program_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=SeasonRepository::class)
  */
 class Season
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="number", type="integer", nullable=false)
+     * @ORM\Column(type="integer")
      */
     private $number;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="year", type="integer", nullable=false)
+     * @ORM\Column(type="integer")
      */
     private $year;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="description", type="text", length=255, nullable=false)
+     * @ORM\Column(type="text")
      */
     private $description;
 
     /**
-     * @var \Program
-     *
-     * @ORM\ManyToOne(targetEntity="Program")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="program_id", referencedColumnName="id")
-     * })
+     * @ORM\ManyToOne(targetEntity=Program::class, inversedBy="seasons")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $program;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Episode::class, mappedBy="season")
+     */
+    private $episodes;
+
+    public function __construct()
+    {
+        $this->episodes = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,5 +103,33 @@ class Season
         return $this;
     }
 
+    /**
+     * @return Collection|Episode[]
+     */
+    public function getEpisodes(): Collection
+    {
+        return $this->episodes;
+    }
 
+    public function addEpisode(Episode $episode): self
+    {
+        if (!$this->episodes->contains($episode)) {
+            $this->episodes[] = $episode;
+            $episode->setSeason($this);
+        }
+
+        return $this;
+    }
+
+    public function removeEpisode(Episode $episode): self
+    {
+        if ($this->episodes->removeElement($episode)) {
+            // set the owning side to null (unless already changed)
+            if ($episode->getSeason() === $this) {
+                $episode->setSeason(null);
+            }
+        }
+
+        return $this;
+    }
 }

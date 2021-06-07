@@ -2,53 +2,39 @@
 
 namespace App\Entity;
 
+use App\Repository\EpisodeRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Episode
- *
- * @ORM\Table(name="episode", indexes={@ORM\Index(name="IDX_DDAA1CDA4EC001D1", columns={"season_id"})})
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass=EpisodeRepository::class)
  */
 class Episode
 {
     /**
-     * @var int
-     *
-     * @ORM\Column(name="id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\GeneratedValue(strategy="IDENTITY")
+     * @ORM\GeneratedValue
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="title", type="string", length=255, nullable=false)
+     * @ORM\Column(type="string", length=255)
      */
     private $title;
 
     /**
-     * @var int
-     *
-     * @ORM\Column(name="number", type="integer", nullable=false)
+     * @ORM\Column(type="integer")
      */
     private $number;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="synopsis", type="text", length=255, nullable=false)
+     * @ORM\Column(type="text")
      */
     private $synopsis;
 
     /**
-     * @var \Season
-     *
-     * @ORM\ManyToOne(targetEntity="Season")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="season_id", referencedColumnName="id")
-     * })
+     * @ORM\ManyToOne(targetEntity=Season::class, inversedBy="episodes")
+     * @ORM\JoinColumn(nullable=true)
      */
     private $season;
 
@@ -104,6 +90,4 @@ class Episode
 
         return $this;
     }
-
-
 }
