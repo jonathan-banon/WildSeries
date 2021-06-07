@@ -27,7 +27,12 @@
         {{ form_widget(form.category) }}
     </div>
 
-    <input class="btn btn-primary mt-3" type='submit' value='Add category'>
+    <div class="form-group">
+        {{ form_label(form.actors) }}
+        {{ form_row(form.actors) }}
+    </div>
+
+    <input class="btn btn-primary mt-3" type='submit' value='Save'>
     {{ form_end(form) }}
 
     <a class="mt-3" href="{{ path('category_index') }}">
