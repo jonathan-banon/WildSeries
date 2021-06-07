@@ -2,24 +2,46 @@
 
 namespace App\DataFixtures;
 
-use App\Entity\Program;
-use App\Entity\Season;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Doctrine\Common\DataFixtures\DependentFixtureInterface;
 use Doctrine\Persistence\ObjectManager;
+use App\Entity\Season;
 
-class SeasonFixtures extends Fixture
+class SeasonFixtures extends Fixture implements DependentFixtureInterface
 {
     public function load(ObjectManager $manager)
     {
-        for ($i = 1; $i < 4; $i++) {
-            $season = new Season();
-            $season->setNumber(mt_rand(1, 10));
-            $season->setYear(mt_rand(1995, 2021));
-            $season->setDescription('description' .$i);
+        $season = new Season();
+        $season->setNumber(1);
+        $season->setDescription('Saison 1 de Brooklyn Nine-Nine.');
+        $season->setYear(2013);
+        $season->setProgram($this->getReference('program_2'));
+        $manager->persist($season);
+        $this->addReference('season_0', $season);
 
-            $manager->persist($season);
-        }
+        $season = new Season();
+        $season->setNumber(2);
+        $season->setDescription('Saison 2 de Brooklyn Nine-Nine.');
+        $season->setYear(2014);
+        $season->setProgram($this->getReference('program_2'));
+        $manager->persist($season);
+        $this->addReference('season_1', $season);
+
+        $season = new Season();
+        $season->setNumber(3);
+        $season->setDescription('Saison 3 de Brooklyn Nine-Nine.');
+        $season->setYear(2015);
+        $season->setProgram($this->getReference('program_2'));
+        $manager->persist($season);
+        $this->addReference('season_2', $season);
 
         $manager->flush();
+    }
+
+    public function getDependencies()
+    {
+        return [
+            ProgramFixtures::class,
+        ];
     }
 }
