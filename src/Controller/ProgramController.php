@@ -1,18 +1,16 @@
 <?php
 
-namespace App\Controller;
 
-use App\Entity\Episode;
-use App\Entity\Program;
-use App\Entity\Season;
+namespace App\Controller;
 use App\Form\ProgramType;
-use App\Repository\ProgramRepository;
-use Doctrine\ORM\EntityManagerInterface;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use App\Service\Slugify;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\HttpFoundation\Request;
+use App\Entity\Program;
+use App\Entity\Season;
+use App\Entity\Episode;
 
 /**
  * @Route("/programs", name="program_")
@@ -23,11 +21,14 @@ class ProgramController extends AbstractController
      * @Route("/", name="index")
      * @return Response
      */
-    public function index(ProgramRepository $programRepository): Response
+    public function index(): Response
     {
-        $programs = $programRepository
-            ->findAll();;
+        $programs = $this->getDoctrine()
+            ->getRepository(Program::class)
+            ->findAll();
+
         return $this->render('program/index.html.twig', [
+            'website' => 'Wild Séries',
             'programs' => $programs,
         ]);
     }
@@ -35,12 +36,14 @@ class ProgramController extends AbstractController
     /**
      * @Route("/new", name="new")
      */
-    public function new(Request $request): Response
+    public function new(Request $request, Slugify $slugify): Response
     {
         $program = new Program();
         $form = $this->createForm(ProgramType::class, $program);
         $form->handleRequest($request);
         if($form->isSubmitted() && $form->isValid()) {
+            $slug = $slugify->generate($program->getTitle());
+            $program->setSlug($slug);
             $entityManager = $this->getDoctrine()->getManager();
             $entityManager->persist($program);
             $entityManager->flush();
@@ -50,31 +53,27 @@ class ProgramController extends AbstractController
         return $this->render('program/new.html.twig', [
             'form' => $form->createView(),
         ]);
+
     }
 
+
     /**
-     * @Route("/{program}", name="show")
+     * Getting a program by id
+     *
+     * @Route("/{slug}", name="show")
      * @return Response
      */
-    public function show(Program $program): Response
+    public function show(Program $program):Response
     {
+
+        if (!$program) {
+            throw $this->createNotFoundException(
+                'No program with id : '. $program->getId(). ' found in program\'s table.'
+            );
+        }
 
         return $this->render('program/show.html.twig', [
             'program' => $program,
-        ]);
-    }
-
-
-
-    /**
-     * @Route("/{program}/{season}/{episode}"), name="episode_show"
-     */
-    public function showEpisode(Program $program, Season $season, Episode $episode): Response
-    {
-        return $this->render('program/episode_show.html.twig', [
-            'season' => $season,
-            'program' => $program,
-            'episode' => $episode,
         ]);
     }
 }
