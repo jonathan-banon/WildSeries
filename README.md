@@ -18,3 +18,6 @@ https://streamable.com/l4673k
 
 QUEST 17:
 https://streamable.com/75h74i
+
+QUEST 18:
+https://streamable.com/eu1fal
